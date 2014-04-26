@@ -5,6 +5,7 @@ import org.scalatest.{FlatSpec, Matchers}
 class AddressSpec extends FlatSpec with Matchers with FakerBehaviors {
 
   import Faker.Address
+  import Faker.DefaultLocale._
 
   "city" should behave like validResult(Address.city)
 
@@ -12,7 +13,7 @@ class AddressSpec extends FlatSpec with Matchers with FakerBehaviors {
 
   "streetAddress" should behave like validResult(Address.streetAddress())
 
-  "streetAddress(includeSecondary)" should behave like validResult(Address.streetAddress(true))
+  "streetAddress(includeSecondary)" should behave like validResult(Address.streetAddress(includeSecondary = true))
 
   "secondaryAddress" should behave like validResult(Address.secondaryAddress)
 

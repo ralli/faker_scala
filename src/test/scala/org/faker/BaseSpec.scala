@@ -3,6 +3,7 @@ package org.faker
 import org.scalatest.{FunSpec, Matchers}
 
 class BaseSpec extends FunSpec with Matchers {
+
   describe("numerify") {
     it("should fill in letters for '#' characters") {
       new Faker.Base {

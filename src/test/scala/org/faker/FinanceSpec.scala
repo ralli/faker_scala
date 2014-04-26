@@ -5,6 +5,8 @@ import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.prop.TableDrivenPropertyChecks._
 
 class FinanceSpec extends FlatSpec with Matchers with FakerBehaviors {
+  import Faker.DefaultLocale._
+
   var types = Table("Type", Finance.CREDIT_CARD_TYPES)
 
   "creditCardType" should behave like validResult(Finance.creditCard(Finance.CREDIT_CARD_TYPES :_*))

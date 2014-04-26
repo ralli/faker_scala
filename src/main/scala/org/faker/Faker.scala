@@ -12,10 +12,9 @@ import java.text.SimpleDateFormat
 
 object Faker {
 
-  private[faker] class Data(defaultLocale: String) {
+  case class FakerLocale(defaultLocale: String) {
     val fallbackLanguage = "en"
-    val locales = (localesList(defaultLocale) :+ fallbackLanguage).distinct
-    val localeDataMap = initLocaleDataMap
+    lazy val locales = (localesList(defaultLocale) :+ fallbackLanguage).distinct
 
     def localesList(locale: String) = {
       val pattern = "^(\\w+)-.*$".r
@@ -26,8 +25,48 @@ object Faker {
           Vector(locale)
       }
     }
+  }
 
-    def initLocaleDataMap = locales.map {
+  object FakerLocale {
+    val DE_AT = FakerLocale("de-at")
+    val DE_CH = FakerLocale("de-ch")
+    val DE = FakerLocale("de")
+    val EN_AU = FakerLocale("en-au")
+    val EN_BORK = FakerLocale("en-bork")
+    val EN_CA = FakerLocale("en-ca")
+    val EN_GB = FakerLocale("en-gb")
+    val EN_IND = FakerLocale("en-ind")
+    val EN_NEP = FakerLocale("en-nep")
+    val EN_US = FakerLocale("en-us")
+    val EN = FakerLocale("en")
+    val ES = FakerLocale("es")
+    val FA = FakerLocale("fa")
+    val FR = FakerLocale("fr")
+    val IT = FakerLocale("it")
+    val JA = FakerLocale("ja")
+    val KO = FakerLocale("ko")
+    val NB_NO = FakerLocale("nb-no")
+    val NL = FakerLocale("nl")
+    val PL = FakerLocale("pl")
+    val PT_BR = FakerLocale("pt-br")
+    val RU = FakerLocale("ru")
+    val SK = FakerLocale("sk")
+    val VI = FakerLocale("vi")
+
+    val allLocales = Vector(DE_AT, DE_CH, DE, EN_AU, EN_BORK, EN_CA, EN_GB, EN_IND, EN_NEP, EN_US, EN, ES, FA, FR, IT, JA, KO, NB_NO, NL, PL, PT_BR, RU, SK, VI)
+  }
+
+  object DefaultLocale {
+    implicit val defaultLocale = FakerLocale.EN
+  }
+
+  private[faker] class Data {
+    val allLocales = FakerLocale.allLocales.map(_.defaultLocale)
+
+    val localeDataMap = initLocaleDataMap
+
+
+    def initLocaleDataMap = allLocales.map {
       locale =>
         locale -> LocaleData(locale)
     }.toMap
@@ -35,26 +74,26 @@ object Faker {
 
     private def localeDataKey(locale: String, key: String) = s"$locale.faker.$key"
 
-    def get(key: String): Option[Seq[String]] = {
+    def get(key: String)(implicit locale: FakerLocale): Option[Seq[String]] = {
       /*
        * the stream is evaluated lazily. So if a match is found in the 'de' locale,
        * the 'en' locale search will not be executed
        */
       val stream: Stream[Seq[String]] = for {
-        locale <- locales.toStream
+        locale <- locale.locales.toStream
         localeData <- localeDataMap.get(locale)
         data <- localeData.get(localeDataKey(locale, key))
       } yield data
       stream.headOption
     }
 
-    def getSeq(key: String): Option[Seq[Seq[String]]] = {
+    def getSeq(key: String)(implicit locale: FakerLocale): Option[Seq[Seq[String]]] = {
       /*
        * the stream is evaluated lazily. So if a match is found in the 'de' locale,
        * the 'en' locale search will not be executed
        */
       val stream: Stream[Seq[Seq[String]]] = for {
-        locale <- locales.toStream
+        locale <- locale.locales.toStream
         localeData <- localeDataMap.get(locale)
         data <- localeData.getSeq(localeDataKey(locale, key))
       } yield data
@@ -113,11 +152,9 @@ object Faker {
   }
 
   private[faker] object DataHolder {
-    val data = new Data("en")
-
-    def get(key: String): Option[Seq[String]] = data.get(key)
-
-    def getSeq(key: String) = data.getSeq(key)
+    val data = new Data()
+    def get(key: String)(implicit locale: FakerLocale): Option[Seq[String]] = data.get(key)
+    def getSeq(key: String)(implicit locale: FakerLocale) = data.getSeq(key)
   }
 
   trait Base {
@@ -229,12 +266,12 @@ object Faker {
         gsub( """\\w""")(m => (('a' to 'z') ++ ('A' to 'Z')).rand.toString)
     }
 
-    def extractSubKeys(key: String): List[String] = {
+    def extractSubKeys(key: String)(implicit locale: FakerLocale): List[String] = {
       val pattern = "#\\{([^}]+)\\}".r
       pattern.findAllMatchIn(key).map(m => m.group(1)).toList
     }
 
-    def expandSubKey(baseKey: String, subKey: String): String = {
+    def expandSubKey(baseKey: String, subKey: String)(implicit locale: FakerLocale): String = {
       if (subKey.contains('.')) {
         fetch(subKey.toSnakeCase).getOrElse(s"#{$subKey}")
       }
@@ -244,7 +281,7 @@ object Faker {
       }
     }
 
-    def expandValues(key: String, value: String): String = {
+    def expandValues(key: String, value: String)(implicit locale: FakerLocale): String = {
       if (value.matches( """^/.*/$""")) {
         regexify(value)
       }
@@ -260,51 +297,51 @@ object Faker {
       }
     }
 
-    def fetch(key: String): Option[String] = get(key).map(seq => seq.rand)
+    def fetch(key: String)(implicit locale: FakerLocale): Option[String] = get(key).map(seq => seq.rand)
 
-    def parseSafe(key: String): Option[String] = fetch(key).map(value => expandValues(key, value))
+    def parseSafe(key: String)(implicit locale: FakerLocale): Option[String] = fetch(key).map(value => expandValues(key, value))
 
-    def parse(key: String): String = parseSafe(key).getOrElse(throw new NoSuchElementException(key))
+    def parse(key: String)(implicit locale: FakerLocale): String = parseSafe(key).getOrElse(throw new NoSuchElementException(key))
 
-    def get(key: String): Option[Seq[String]] = DataHolder.get(key)
+    def get(key: String)(implicit locale: FakerLocale): Option[Seq[String]] = DataHolder.get(key)
 
-    def getSeq(key: String) = DataHolder.getSeq(key)
+    def getSeq(key: String)(implicit locale: FakerLocale) = DataHolder.getSeq(key)
   }
 
   object Address extends Base {
-    def city = parse("address.city")
+    def city(implicit locale: FakerLocale) = parse("address.city")
 
-    def streetName = parse("address.street_name")
+    def streetName(implicit locale: FakerLocale) = parse("address.street_name")
 
-    def streetAddress(include_secondary: Boolean = false) = {
+    def streetAddress(includeSecondary: Boolean = false)(implicit locale: FakerLocale) = {
       val base = parse("address.street_address")
-      val result = if (include_secondary) base + secondaryAddress else base
+      val result = if (includeSecondary) base + secondaryAddress else base
       numerify(result)
     }
 
-    def secondaryAddress = numerify(parse("address.secondary_address"))
+    def secondaryAddress(implicit locale: FakerLocale) = numerify(parse("address.secondary_address"))
 
-    def buildingNumber = bothify(parse("address.building_number"))
+    def buildingNumber(implicit locale: FakerLocale) = bothify(parse("address.building_number"))
 
-    def zipCode = bothify(parse("address.postcode"))
+    def zipCode(implicit locale: FakerLocale) = bothify(parse("address.postcode"))
 
-    def timeZone = bothify(parse("address.time_zone"))
+    def timeZone(implicit locale: FakerLocale) = bothify(parse("address.time_zone"))
 
-    def zip = zipCode
+    def zip(implicit locale: FakerLocale) = zipCode
 
-    def postcode = zipCode
+    def postcode(implicit locale: FakerLocale) = zipCode
 
-    def streetSuffix = parse("address.street_suffix")
+    def streetSuffix(implicit locale: FakerLocale) = parse("address.street_suffix")
 
-    def citySuffix = parse("address.city_suffix")
+    def citySuffix(implicit locale: FakerLocale) = parse("address.city_suffix")
 
-    def cityPrefix = parse("address.city_prefix")
+    def cityPrefix(implicit locale: FakerLocale) = parse("address.city_prefix")
 
-    def stateAbbr = parse("address.state_abbr")
+    def stateAbbr(implicit locale: FakerLocale) = parse("address.state_abbr")
 
-    def state = parse("address.state")
+    def state(implicit locale: FakerLocale) = parse("address.state")
 
-    def country = parse("address.country")
+    def country(implicit locale: FakerLocale) = parse("address.country")
 
     def latitude = (Random.nextDouble * 180 - 90).toString
 
@@ -312,7 +349,7 @@ object Faker {
   }
 
   object Avatar extends Base {
-    def image(slug: Option[String] = None) = {
+    def image(slug: Option[String] = None)(implicit locale: FakerLocale) = {
       // TODO use Lorem.words
       s"http://robohash.org/${slug.getOrElse(parse("lorem.words"))}}"
     }
@@ -348,11 +385,11 @@ object Faker {
   }
 
   object Business extends Base {
-    def creditCardNumber: String = parse("business.credit_card_numbers")
+    def creditCardNumber(implicit locale: FakerLocale): String = parse("business.credit_card_numbers")
 
-    def creditCardExpiryDate: Date = new SimpleDateFormat("yyyy-MM-dd").parse(parse("business.credit_card_expiry_dates"))
+    def creditCardExpiryDate(implicit locale: FakerLocale): Date = new SimpleDateFormat("yyyy-MM-dd").parse(parse("business.credit_card_expiry_dates"))
 
-    def creditCardType: String = parse("business.credit_card_types")
+    def creditCardType(implicit locale: FakerLocale): String = parse("business.credit_card_types")
   }
 
   object Code extends Base {
@@ -383,42 +420,42 @@ object Faker {
   }
 
   object Commerce extends Base {
-    def color = parse("commerce.color")
+    def color(implicit locale: FakerLocale) = parse("commerce.color")
 
-    def department = parse("commerce.department")
+    def department(implicit locale: FakerLocale) = parse("commerce.department")
 
-    def productName = parse("commerce.product_name.adjective") + " " + parse("commerce.product_name.material") + " " + parse("commerce.product_name.product")
+    def productName(implicit locale: FakerLocale) = parse("commerce.product_name.adjective") + " " + parse("commerce.product_name.material") + " " + parse("commerce.product_name.product")
 
-    def price = (Random.nextDouble * 100 * 100).floor / 100.0
+    def price(implicit locale: FakerLocale) = (Random.nextDouble * 100 * 100).floor / 100.0
   }
 
   object Company extends Base {
-    def name = parse("company.name")
+    def name(implicit locale: FakerLocale) = parse("company.name")
 
-    def suffix = parse("company.suffix")
+    def suffix(implicit locale: FakerLocale) = parse("company.suffix")
 
-    def catchPhrase = {
+    def catchPhrase(implicit locale: FakerLocale) = {
       val seqs = getSeq("company.buzzwords").get
       seqs.flatMap(s => s.sample()).mkString(" ")
     }
 
-    def bs = {
+    def bs(implicit locale: FakerLocale) = {
       val seqs = getSeq("company.bs").get
       seqs.flatMap(s => s.sample()).mkString(" ")
     }
 
-    def dunsNumber = numerify("##-###-####")
+    def dunsNumber(implicit locale: FakerLocale) = numerify("##-###-####")
   }
 
 
   object Finance extends Base {
     val CREDIT_CARD_TYPES = Array("visa", "mastercard", "discover", "american_express", "diners_club", "jcb", "switch", "solo", "dankort", "maestro", "forbrugsforeningen", "laser")
 
-    def creditCard(typesList: String*) = {
+    def creditCard(typesList: String*)(implicit locale: FakerLocale) = {
       val types: Vector[String] = if (typesList.isEmpty) CREDIT_CARD_TYPES.toVector else typesList.toVector
       val t = types.rand
-      var template = numerify(parse(s"credit_card.$t"))
-      var luhnDigit = (10 - (luhn(template) % 10)) % 10
+      val template = numerify(parse(s"credit_card.$t"))
+      val luhnDigit = (10 - (luhn(template) % 10)) % 10
       template.replaceAll("L", luhnDigit.toString)
     }
 
@@ -444,9 +481,9 @@ object Faker {
   }
 
   object Internet extends Base {
-    def domainWord = Company.name.split(" ").head.replaceAll( """\W""", "").toLowerCase()
+    def domainWord(implicit locale: FakerLocale) = Company.name.split(" ").head.replaceAll( """\W""", "").toLowerCase()
 
-    def domainSuffix = parse("internet.domain_suffix")
+    def domainSuffix(implicit locale: FakerLocale) = parse("internet.domain_suffix")
 
     def macAddress(prefix: String = "") = {
       val prefixDigits = prefix.split(":").filterNot(_.isEmpty).map(s => Integer.parseInt(s, 16))
@@ -478,9 +515,9 @@ object Faker {
   }
 
   object Lorem extends Base {
-    def word = parse("lorem.words")
+    def word(implicit locale: FakerLocale) = parse("lorem.words")
 
-    def words(num: Int = 3, supplemental: Boolean = false) = {
+    def words(num: Int = 3, supplemental: Boolean = false)(implicit locale: FakerLocale) = {
       val word_list = if (supplemental) get("lorem.words").get ++ get("lorem.supplemental").get else get("lorem.words").get
       word_list.sample(Some(num))
     }
@@ -490,37 +527,37 @@ object Faker {
       chars.sample(Some(count)).mkString
     }
 
-    def sentence(wordCount: Int = 4, supplemental: Boolean = false, randomWordsToAdd: Int = 6) =
+    def sentence(wordCount: Int = 4, supplemental: Boolean = false, randomWordsToAdd: Int = 6)(implicit locale: FakerLocale) =
       words(wordCount + Random.nextInt(randomWordsToAdd), supplemental).map(s => s.head.toUpper + s.tail).mkString(" ") + "."
 
-    def sentences(sentenceCount: Int = 3, supplemental: Boolean = false) =
+    def sentences(sentenceCount: Int = 3, supplemental: Boolean = false)(implicit locale: FakerLocale) =
       (1 to sentenceCount).map(_ => sentence(wordCount = 3, supplemental = supplemental))
 
-    def paragraph(sentenceCount: Int = 3, supplemental: Boolean = false, randomSentencesToAdd: Int = 3) =
+    def paragraph(sentenceCount: Int = 3, supplemental: Boolean = false, randomSentencesToAdd: Int = 3)(implicit locale: FakerLocale) =
       sentences(sentenceCount + Random.nextInt(randomSentencesToAdd), supplemental).mkString(" ")
 
-    def paragraphs(paragraphCount: Int = 3, supplemental: Boolean = false) =
+    def paragraphs(paragraphCount: Int = 3, supplemental: Boolean = false)(implicit locale: FakerLocale) =
       (1 to paragraphCount).map(_ => paragraph(supplemental = supplemental))
 
   }
 
   object Name extends Base {
-    def name = parse("name.name")
+    def name(implicit locale: FakerLocale) = parse("name.name")
 
-    def firstName = parse("name.first_name")
+    def firstName(implicit locale: FakerLocale) = parse("name.first_name")
 
-    def lastName = parse("name.last_name")
+    def lastName(implicit locale: FakerLocale) = parse("name.last_name")
 
-    def prefix = parse("name.prefix")
+    def prefix(implicit locale: FakerLocale) = parse("name.prefix")
 
-    def suffix = parse("name.suffix")
+    def suffix(implicit locale: FakerLocale) = parse("name.suffix")
 
     /**
      * Generate a buzzword-laden job title
      *
      * Wordlist from http://www.bullshitjob.com/title/
      */
-    def title = parse("name.title.descriptor") + " " + parse("name.title.level") + " " + parse("name.title.job")
+    def title(implicit locale: FakerLocale) = parse("name.title.descriptor") + " " + parse("name.title.level") + " " + parse("name.title.job")
   }
 
   object Number extends Base {
@@ -530,13 +567,13 @@ object Faker {
   }
 
   object PhoneNumber extends Base {
-    def phoneNumber = numerify(parse("phone_number.formats"))
-    def cellPhone = parseSafe("cell_phone.formats").map(s => numerify(s)).getOrElse(phoneNumber)
+    def phoneNumber(implicit locale: FakerLocale) = numerify(parse("phone_number.formats"))
+    def cellPhone(implicit locale: FakerLocale) = parseSafe("cell_phone.formats").map(s => numerify(s)).getOrElse(phoneNumber)
   }
 
   object Team extends Base {
-    def name = parse("team.name").titlelize
-    def creature = parse("team.creature")
-    def state = parse("address.state")
+    def name(implicit locale: FakerLocale) = parse("team.name").titlelize
+    def creature(implicit locale: FakerLocale) = parse("team.creature")
+    def state(implicit locale: FakerLocale) = parse("address.state")
   }
 }
