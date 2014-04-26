@@ -273,11 +273,11 @@ object Faker {
 
     def expandSubKey(baseKey: String, subKey: String)(implicit locale: FakerLocale): String = {
       if (subKey.contains('.')) {
-        fetch(subKey.toSnakeCase).getOrElse(s"#{$subKey}")
+        parseSafe(subKey.toSnakeCase).getOrElse(s"#{$subKey}")
       }
       else {
         val basePrefix = baseKey.split("\\.").init.mkString(".")
-        fetch(s"$basePrefix.$subKey").getOrElse(s"#{$subKey}")
+        parseSafe(s"$basePrefix.$subKey").getOrElse(s"#{$subKey}")
       }
     }
 
@@ -393,7 +393,7 @@ object Faker {
   }
 
   object Code extends Base {
-    def isbn(base: Int = 10): String = if (base == 10) generateBase10ISBN else generateBase13ISBN
+    def isbn(base: Int = 13): String = if (base == 13) generateBase13ISBN else generateBase10ISBN
 
     private def generateBase10ISBN = {
       val num = numerify("#" * 9)
@@ -404,8 +404,8 @@ object Faker {
 
     private def generateBase13ISBN = {
       val num = numerify("#" * 12)
-      val remainder = sum(num, (idx, value) => if (value % 2 == 0) value else value * 3) % 10
-      val check = 10 - remainder % 10
+      val remainder = sum(num, (idx, value) => if (idx % 2 == 1) value else value * 3) % 10
+      val check = (10 - remainder) % 10
       s"$num$check"
     }
 
@@ -492,12 +492,12 @@ object Faker {
     }
 
     def ipV4Address = {
-      var ary = 2 to 254
+      val ary = 2 to 254
       Array(ary.rand, ary.rand, ary.rand, ary.rand).mkString(".")
     }
 
     def ipV6Address = {
-      var ary = 0 to 65535
+      val ary = 0 to 65535
       (1 to 8).map(_ => f"${ary.rand}%x").mkString(":")
     }
 
