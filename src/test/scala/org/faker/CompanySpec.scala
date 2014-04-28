@@ -4,7 +4,6 @@ import org.scalatest.{FlatSpec, Matchers}
 import org.faker.Faker.Company
 
 class CompanySpec extends FlatSpec with Matchers with FakerBehaviors {
-  import Faker.DefaultLocale._
 
   "company" should behave like validResult(Company.name)
 

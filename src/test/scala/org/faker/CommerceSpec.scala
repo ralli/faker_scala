@@ -4,7 +4,6 @@ import org.scalatest.{FlatSpec, Matchers}
 import org.faker.Faker.Commerce
 
 class CommerceSpec extends FlatSpec with Matchers with FakerBehaviors {
-  import Faker.DefaultLocale._
 
   "color" should behave like validResult(Commerce.color)
 

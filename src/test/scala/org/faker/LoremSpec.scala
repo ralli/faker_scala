@@ -4,7 +4,6 @@ import org.scalatest.{FlatSpec, Matchers}
 import org.faker.Faker.Lorem
 
 class LoremSpec extends FlatSpec with Matchers with FakerBehaviors {
-  import Faker.DefaultLocale._
 
   "word" should behave like validResult(Lorem.word)
 

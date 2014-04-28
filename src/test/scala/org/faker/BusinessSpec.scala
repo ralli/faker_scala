@@ -4,7 +4,6 @@ import org.scalatest.{FlatSpec, Matchers}
 import org.faker.Faker.Business
 
 class BusinessSpec extends FlatSpec with Matchers with FakerBehaviors {
-  import Faker.DefaultLocale._
 
   "creditCardNumber" should behave like validResult(Business.creditCardNumber)
 
