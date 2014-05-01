@@ -26,12 +26,6 @@ class AddressSpec extends FlatSpec with Matchers with FakerBehaviors {
 
   "postcode" should behave like validResult(Address.postcode)
 
-  "streetSuffix" should behave like validResult(Address.streetSuffix)
-
-  "citySuffix" should behave like validResult(Address.citySuffix)
-
-  "cityPrefix" should behave like validResult(Address.cityPrefix)
-
   "stateAbbr" should behave like validResult(Address.stateAbbr)
 
   "state" should behave like validResult(Address.state)

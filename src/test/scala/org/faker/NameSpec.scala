@@ -15,5 +15,5 @@ class NameSpec extends FlatSpec with Matchers with FakerBehaviors {
 
   "suffix" should behave like validResult(Name.suffix)
 
-  "title" should behave like validResult(Name.title)
+  "title" should behave like validResult(Name.jobTitle)
 }

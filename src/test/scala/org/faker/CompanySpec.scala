@@ -11,7 +11,7 @@ class CompanySpec extends FlatSpec with Matchers with FakerBehaviors {
 
   "catchPhrase" should behave like validResult(Company.catchPhrase)
 
-  "bs" should behave like validResult(Company.bs)
+  "bs" should behave like validResult(Company.bullshit)
 
   "dunsNumber" should "match a valid duns number" in {
     Company.dunsNumber should fullyMatch regex """\d{2}-\d{3}-\d{4}"""
