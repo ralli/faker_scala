@@ -54,7 +54,7 @@ class Data {
   /**
    * given a key returns a sequence of sequences to generate fake data.
    *
-   * an example is [[org.faker.Faker.Company.catchPhrase]] which uses the key 'company.buzzwords' to generate
+   * an example is [[org.faker.Company.catchPhrase]] which uses the key 'company.buzzwords' to generate
    * phases like "Front-line grid-enabled protocol" from three sequences (one for each word).
    *
    * @param key the datas key without the prefix `<locale>`.`faker`

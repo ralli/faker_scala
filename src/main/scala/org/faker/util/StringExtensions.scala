@@ -3,7 +3,6 @@ package org.faker.util
 import scala.util.matching.Regex.Match
 
 trait StringExtensions {
-
   implicit class StringExtensionMethods(string: String) {
     def gsub(re: String, replacement: String): String = {
       re.r.replaceAllIn(string, replacement)
@@ -29,9 +28,9 @@ trait StringExtensions {
       gsub("^[A-Z]")(m => m.toString.toLowerCase()).
         gsub( """([A-Z])""")(m => "_" + m.group(1).toLowerCase())
 
-    def titlelize = string.gsub("(\\s+.)")(m => m.group(1).toUpperCase())
+    def titlelize = string.gsub("(\\w+)")(m => m.group(1).head.toUpper + m.group(1).tail.toLowerCase())
 
-    def removeNonWordChars = string.replaceAll( """\W""", "")
+    def removeNonWordChars = string.replaceAll("""\W""", "")
   }
 
 }
