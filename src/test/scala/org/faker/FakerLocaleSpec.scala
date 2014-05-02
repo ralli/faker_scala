@@ -1,7 +1,6 @@
 package org.faker
 
 import org.scalatest.{FlatSpec, Matchers}
-import org.faker.Faker.FakerLocale
 
 class FakerLocaleSpec extends FlatSpec with Matchers {
   "locales" should "contain three locales if 'de-at' is given" in {

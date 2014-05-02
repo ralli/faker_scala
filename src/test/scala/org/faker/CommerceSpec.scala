@@ -1,7 +1,6 @@
 package org.faker
 
 import org.scalatest.{FlatSpec, Matchers}
-import org.faker.Faker.Commerce
 
 class CommerceSpec extends FlatSpec with Matchers with FakerBehaviors {
 

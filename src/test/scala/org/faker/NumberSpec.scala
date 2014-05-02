@@ -1,7 +1,6 @@
 package org.faker
 
 import org.scalatest.{Matchers, FlatSpec}
-import Faker.Number
 
 class NumberSpec extends FlatSpec with Matchers {
   "number" should "return the given number of digits" in {

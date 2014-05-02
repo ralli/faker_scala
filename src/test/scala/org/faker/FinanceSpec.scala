@@ -1,6 +1,5 @@
 package org.faker
 
-import org.faker.Faker.Finance
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.prop.TableDrivenPropertyChecks._
 

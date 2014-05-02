@@ -1,7 +1,6 @@
 package org.faker
 
 import org.scalatest.{FlatSpec, Matchers}
-import org.faker.Faker.Lorem
 
 class LoremSpec extends FlatSpec with Matchers with FakerBehaviors {
 

@@ -1,7 +1,6 @@
 package org.faker
 
 import org.scalatest.{Matchers, FlatSpec}
-import org.faker.Faker.Code
 
 class CodeSpec extends FlatSpec with Matchers {
   "isbn(10)" should "return a isbn of length 10" in {
