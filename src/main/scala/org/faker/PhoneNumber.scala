@@ -1,5 +1,7 @@
 package org.faker
 
+import java.util.NoSuchElementException
+
 /**
  * Generates phone numbers
  * {{{
@@ -21,4 +23,16 @@ object PhoneNumber extends Base {
    * case the method will fall back to ordinary phone numbers.
    */
   def cellPhone(implicit locale: FakerLocale = FakerLocale.default) = parseSafe("cell_phone.formats").map(s => numerify(s)).getOrElse(phoneNumber)
+
+  /**
+   * generates the phone numbers area code (US only).
+   */
+  @throws[NoSuchElementException]("if the locale is not EN_US")
+  def areaCode(implicit locale: FakerLocale = FakerLocale.default) = parse("phone_number.area_code")
+
+  /**
+   * generates the phone numbers exchange code (US only)
+   */
+  @throws[NoSuchElementException]("if the locale is not EN_US")
+  def exchangeCode(implicit locale: FakerLocale = FakerLocale.default) = numerify(parse("phone_number.exchange_code"))
 }
