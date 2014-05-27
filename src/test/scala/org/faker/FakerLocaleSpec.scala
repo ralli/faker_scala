@@ -18,4 +18,8 @@ class FakerLocaleSpec extends FlatSpec with Matchers {
     data.locales should equal(Vector("en"))
   }
 
+  it should "not contain non existing locales" in {
+    val data = FakerLocale.PT_BR
+    data.locales should equal(Vector("pt-br", "en"))
+  }
 }

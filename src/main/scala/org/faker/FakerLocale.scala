@@ -31,7 +31,10 @@ case class FakerLocale(localeKey: String) {
     val pattern = "^(\\w+)-.*$".r
     pattern.findFirstIn(locale) match {
       case Some(pattern(firstPart)) =>
-        Vector(locale, firstPart)
+        if(FakerLocale.allLocales.exists(fl => fl.localeKey == firstPart))
+          Vector(locale, firstPart)
+        else
+          Vector(locale)
       case _ =>
         Vector(locale)
     }
