@@ -5,4 +5,6 @@ import org.scalatest.{FlatSpec, Matchers}
 class AvatarSpec extends FlatSpec with Matchers with FakerBehaviors {
 
   "image" should behave like validResult(Avatar.image())
+
+  "image(slug)" should behave like validResult(Avatar.image("some+slug"))
 }
