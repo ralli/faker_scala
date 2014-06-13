@@ -44,7 +44,7 @@ object Address extends Base {
    */
   def streetAddress(includeSecondary: Boolean = false)(implicit locale: FakerLocale = FakerLocale.default) = {
     val base = parse("address.street_address")
-    val result = if (includeSecondary) base + secondaryAddress else base
+    val result = if (includeSecondary) base + " " + secondaryAddress else base
     numerify(result)
   }
 

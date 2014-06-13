@@ -22,5 +22,5 @@ object Business extends Base {
   /**
    * returns a credit card type (ex. mastercard)
    */
-  def creditCardType(implicit locale: FakerLocale = FakerLocale.default): String = parse("business.credit_card_types")
+    def creditCardType(implicit locale: FakerLocale = FakerLocale.default): String = parse("business.credit_card_types")
 }
