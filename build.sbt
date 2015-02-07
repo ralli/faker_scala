@@ -1,18 +1,12 @@
 organization := "org.faker"
 
-publishTo := Some("Artifactory Realm" at "http://localhost:8081/artifactory/libs-release-local")
-
-credentials += Credentials("Artifactory Realm", "localhost", "ralli", "schwobb-")
-
-
-
 publishMavenStyle := true
 
 name := "faker_scala"
 
-version := "0.9.1"
+version := "0.9.2-SNAPSHOT"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.1"
 
 scalacOptions ++= Seq("-feature", "-deprecation")
 
@@ -20,8 +14,7 @@ publishArtifact in Test := false
 
 libraryDependencies ++= Seq(
   "org.yaml" % "snakeyaml" % "1.13",
-  "org.scalatest" %% "scalatest" % "2.1.0" % "test",
-  "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
+  "org.scalatest" %% "scalatest" % "2.1.6" % "test"
 )
 
 pomExtra :=
