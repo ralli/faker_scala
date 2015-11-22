@@ -4,17 +4,17 @@ publishMavenStyle := true
 
 name := "faker_scala"
 
-version := "0.9.2-SNAPSHOT"
+version := "0.9.3-SNAPSHOT"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.7"
 
 scalacOptions ++= Seq("-feature", "-deprecation")
 
 publishArtifact in Test := false
 
 libraryDependencies ++= Seq(
-  "org.yaml" % "snakeyaml" % "1.13",
-  "org.scalatest" %% "scalatest" % "2.1.6" % "test"
+  "org.yaml" % "snakeyaml" % "1.16",
+  "org.scalatest" %% "scalatest" % "2.2.5" % "test"
 )
 
 pomExtra :=
