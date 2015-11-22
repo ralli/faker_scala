@@ -29,7 +29,7 @@ object Finance extends Base {
    *
    * @param typesList the list of credit card types to use (one of [[CREDIT_CARD_TYPES]]
    */
-  def creditCardNumber(typesList: String*)(implicit locale: FakerLocale = FakerLocale.default) = {
+  def creditCardNumber(typesList: String*)(implicit locale: FakerLocale = FakerLocale.default): String = {
     val types: Vector[String] = if (typesList.isEmpty) CREDIT_CARD_TYPES.toVector else typesList.toVector
     val t = types.randomElement
     val template = numerify(parse(s"credit_card.$t"))

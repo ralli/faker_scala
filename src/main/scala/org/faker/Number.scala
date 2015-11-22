@@ -23,17 +23,17 @@ object Number extends Base {
    *
    * @param digits the number of digits generate
    */
-  def number(digits: Int) = numerify("#" * digits)
+  def number(digits: Int): String = numerify("#" * digits)
 
   /**
    * Generates a String of digits. the digits will be delimited by a period independent of the locale used.
    * @param ldigits the number of digits to generate before the period
    * @param rdigits the number of digits to generate after the period
    */
-  def decimal(ldigits: Int, rdigits: Int = 2) = numerify(("#" * ldigits) + '.' + ("#" * rdigits))
+  def decimal(ldigits: Int, rdigits: Int = 2): String = numerify(("#" * ldigits) + '.' + ("#" * rdigits))
 
   /**
    * Generates a single digit string
    */
-  def digit = Random.nextInt(10).toString
+  def digit: String = Random.nextInt(10).toString
 }

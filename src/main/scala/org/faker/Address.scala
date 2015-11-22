@@ -27,14 +27,14 @@ object Address extends Base {
    *
    * @param locale - the locale to use (defaults to FakerLocale.default)
    */
-  def city(implicit locale: FakerLocale = FakerLocale.default) = parse("address.city")
+  def city(implicit locale: FakerLocale = FakerLocale.default): String = parse("address.city")
 
   /**
    * Returns a street name without any additions like building number or secondary address
    *
    * @param locale - the locale to use (defaults to FakerLocale.default)
    */
-  def streetName(implicit locale: FakerLocale = FakerLocale.default) = parse("address.street_name")
+  def streetName(implicit locale: FakerLocale = FakerLocale.default): String = parse("address.street_name")
 
   /**
    * Returns a street name including an (optional) building number
@@ -42,7 +42,7 @@ object Address extends Base {
    * @param includeSecondary `true` if the street address should include addtitional lnformation like 'Apt. 201' or 'Suite 21'
    * @param locale - the locale to use (defaults to FakerLocale.default)
    */
-  def streetAddress(includeSecondary: Boolean = false)(implicit locale: FakerLocale = FakerLocale.default) = {
+  def streetAddress(includeSecondary: Boolean = false)(implicit locale: FakerLocale = FakerLocale.default): String = {
     val base = parse("address.street_address")
     val result = if (includeSecondary) base + " " + secondaryAddress else base
     numerify(result)
@@ -53,57 +53,57 @@ object Address extends Base {
    *
    * @param locale - the locale to use (defaults to FakerLocale.default)
    */
-  def secondaryAddress(implicit locale: FakerLocale = FakerLocale.default) = numerify(parse("address.secondary_address"))
+  def secondaryAddress(implicit locale: FakerLocale = FakerLocale.default): String = numerify(parse("address.secondary_address"))
 
   /**
    * @param locale - the locale to use (defaults to FakerLocale.default)
    * @return the building number
    */
-  def buildingNumber(implicit locale: FakerLocale = FakerLocale.default) = bothify(parse("address.building_number"))
+  def buildingNumber(implicit locale: FakerLocale = FakerLocale.default): String = bothify(parse("address.building_number"))
 
   /**
    * @param locale - the locale to use (defaults to FakerLocale.default)
    *
    * @return the zip code
    */
-  def zipCode(implicit locale: FakerLocale = FakerLocale.default) = bothify(parse("address.postcode"))
+  def zipCode(implicit locale: FakerLocale = FakerLocale.default): String = bothify(parse("address.postcode"))
 
   /**
    * @param locale - the locale to use (defaults to FakerLocale.default)
    * @return Time Zone in a long ruby-like format (ex. America/Denver)
    */
-  def timeZone(implicit locale: FakerLocale = FakerLocale.default) = bothify(parse("address.time_zone"))
+  def timeZone(implicit locale: FakerLocale = FakerLocale.default): String = bothify(parse("address.time_zone"))
 
   /**
    * an alias for [[zipCode]]
    */
-  def zip(implicit locale: FakerLocale = FakerLocale.default) = zipCode
+  def zip(implicit locale: FakerLocale = FakerLocale.default): String = zipCode
 
   /**
    * an alias for [[zipCode]]
    */
-  def postcode(implicit locale: FakerLocale = FakerLocale.default) = zipCode
+  def postcode(implicit locale: FakerLocale = FakerLocale.default): String = zipCode
 
   /**
    * returns an abbreviated state name (ex. AK for Alaska)
    *
    * @param locale - the locale to use (defaults to FakerLocale.default)
    */
-  def stateAbbr(implicit locale: FakerLocale = FakerLocale.default) = parse("address.state_abbr")
+  def stateAbbr(implicit locale: FakerLocale = FakerLocale.default): String = parse("address.state_abbr")
 
   /**
    * returns a states name (ex. Alaska)
    * @param locale - the locale to use (defaults to FakerLocale.default)
    */
-  def state(implicit locale: FakerLocale = FakerLocale.default) = parse("address.state")
+  def state(implicit locale: FakerLocale = FakerLocale.default): String = parse("address.state")
 
   /**
    * Returns a countries name (ex. Albania)
    * @param locale - the locale to use (defaults to FakerLocale.default)
    */
-  def country(implicit locale: FakerLocale = FakerLocale.default) = parse("address.country")
+  def country(implicit locale: FakerLocale = FakerLocale.default): String = parse("address.country")
 
-  def latitude = (Random.nextDouble * 180 - 90).toString
+  def latitude: String = (Random.nextDouble * 180 - 90).toString
 
-  def longitude = (Random.nextDouble * 180 - 90).toString
+  def longitude: String = (Random.nextDouble * 180 - 90).toString
 }

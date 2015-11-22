@@ -61,12 +61,12 @@ object Internet extends Base {
   /**
    * generates a persons company email address
    */
-  def email(implicit locale: FakerLocale = FakerLocale.default) = s"${userName()}@${domainName()}"
+  def email(implicit locale: FakerLocale = FakerLocale.default): String = s"${userName()}@${domainName()}"
 
   /**
    * generates a persons email address at a free email provider (yahoo, gmail and the like)
    */
-  def freeEmail(implicit locale: FakerLocale = FakerLocale.default) = {
+  def freeEmail(implicit locale: FakerLocale = FakerLocale.default): String = {
     val d = parse("internet.free_email")
     s"$userName@$d"
   }
@@ -75,7 +75,7 @@ object Internet extends Base {
    * generates a persons email address at one of the sites example.[com,org,net]
    */
 
-  def safeEmail(implicit locale: FakerLocale = FakerLocale.default) = {
+  def safeEmail(implicit locale: FakerLocale = FakerLocale.default): String = {
     val domain = Array("com", "org", "net").randomElement
     s"$userName@example.$domain"
   }
@@ -83,22 +83,22 @@ object Internet extends Base {
   /**
    * generates the domain word from a generated companies name
    */
-  def domainWord(implicit locale: FakerLocale = FakerLocale.default) = Company.name.split(" ").head.removeNonWordChars.toLowerCase
+  def domainWord(implicit locale: FakerLocale = FakerLocale.default): String = Company.name.split(" ").head.removeNonWordChars.toLowerCase
 
   /**
    * generates a domain suffix (com, org, net, ...) without leading period
    */
-  def domainSuffix(implicit locale: FakerLocale = FakerLocale.default) = parse("internet.domain_suffix")
+  def domainSuffix(implicit locale: FakerLocale = FakerLocale.default): String = parse("internet.domain_suffix")
 
   /**
    * generates a password
    */
-  def password(implicit locale: FakerLocale = FakerLocale.default) = Lorem.words().mkString
+  def password(implicit locale: FakerLocale = FakerLocale.default): String = Lorem.words().mkString
 
   /**
    * generates a mac address like `44:d5:ee:d0:f7:fb`
    */
-  def macAddress(prefix: String = "") = {
+  def macAddress(prefix: String = ""): String = {
     val prefixDigits = prefix.split(":").filterNot(_.isEmpty).map(s => Integer.parseInt(s, 16))
     val addressDigits = (1 to (6 - prefixDigits.size)).map(_ => Random.nextInt(256))
     (prefixDigits ++ addressDigits).map(i => f"$i%02x").mkString(":")
@@ -107,7 +107,7 @@ object Internet extends Base {
   /**
    * generates an ip address like `142.246.100.144`
    */
-  def ipV4Address = {
+  def ipV4Address: String = {
     val ary = 2 to 254
     Array(ary.randomElement, ary.randomElement, ary.randomElement, ary.randomElement).mkString(".")
   }
@@ -115,7 +115,7 @@ object Internet extends Base {
   /**
    * generates an IP V6 address like `77e2:40cb:3d2a:5697:d6cf:43ae:5cae:e343`
    */
-  def ipV6Address = {
+  def ipV6Address: String = {
     val ary = 0 to 65535
     (1 to 8).map(_ => f"${ary.randomElement}%x").mkString(":")
   }

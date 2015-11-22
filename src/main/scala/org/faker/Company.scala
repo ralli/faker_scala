@@ -18,14 +18,14 @@ package org.faker
  * }}}
  */
 object Company extends Base {
-  def name(implicit locale: FakerLocale = FakerLocale.default) = parse("company.name")
+  def name(implicit locale: FakerLocale = FakerLocale.default): String = parse("company.name")
 
-  def catchPhrase(implicit locale: FakerLocale = FakerLocale.default) = {
+  def catchPhrase(implicit locale: FakerLocale = FakerLocale.default): String = {
     val seqs = getSeq("company.buzzwords").get
     seqs.map(s => s.randomElement).mkString(" ")
   }
 
-  def bullshit(implicit locale: FakerLocale = FakerLocale.default) = {
+  def bullshit(implicit locale: FakerLocale = FakerLocale.default): String = {
     val seqs = getSeq("company.bs").get
     seqs.map(s => s.randomElement).mkString(" ")
   }
@@ -33,5 +33,5 @@ object Company extends Base {
   /**
    * generates a companies D-U-N-S number.
    */
-  def dunsNumber(implicit locale: FakerLocale = FakerLocale.default) = numerify("##-###-####")
+  def dunsNumber(implicit locale: FakerLocale = FakerLocale.default): String = numerify("##-###-####")
 }

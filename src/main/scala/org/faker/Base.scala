@@ -60,7 +60,7 @@ trait Base
    *
    * {{{"U3V  3TP"}}}
    */
-  def regexify(re: String) = {
+  def regexify(re: String): String = {
     re.
       gsub( """^\/?\^?""", "").gsub( """\$?\/?$""", ""). // Ditch the anchors
       gsub( """\{(\d+)\}""", """\{$1,$1\}""").gsub( """\?""", "{0,1}"). // All {2} become {2,2} and ? become {0,1}
@@ -80,7 +80,7 @@ trait Base
    *
    * Example: `extractSubKeys("#{first_name} #{last_name}")` will return `["first_name", "last_name"]`
    */
-  private def extractSubKeys(key: String): List[String] = {
+  private def extractSubKeys(key: String): Seq[String] = {
     val pattern = "#\\{([^}]+)\\}".r
     pattern.findAllMatchIn(key).map(m => m.group(1)).toList
   }

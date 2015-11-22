@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
  */
 object Business extends Base {
   /**
-   * returns a credit card number. the method [[org.faker.Faker.Finance.creditCardNumber( )]] returns better fake data
+   * returns a credit card number. the method [[org.faker.Finance.creditCardNumber( )]] returns better fake data
    * @param locale - the locale to use (defaults to FakerLocale.default)
    */
   def creditCardNumber(implicit locale: FakerLocale = FakerLocale.default): String = parse("business.credit_card_numbers")

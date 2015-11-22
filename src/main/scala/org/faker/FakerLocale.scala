@@ -1,37 +1,37 @@
 package org.faker
 
 /**
- * Provides Information about which locale to use for fake data generation.
- *
- * The faker objects will use a sequence of data files representing different locales to generate their values.
- * The "de-at" locale, for instance, will use the data files de_at.yml, de.yml and en.yml (in that sequence). The companion
- * object will provide constants for all locales supported by this faker library.
- *
- * {{{
- * scala> Faker.Name.name // will use the default locale (FakerLocale.EN)
- * res5: String = Cleve Christiansen
- *
- * scala> Faker.Name.name(Faker.FakerLocale.DE) // uses the DE-locale and EN as fallback
- * res7: String = Lina von Harnapp
- *
- * scala> implicit val defaultLocale = Faker.FakerLocale.DE_AT // will use the "DE-AT" as locale and "DE" and "EN" as fallback
- * defaultLocale: org.faker.Faker.FakerLocale = FakerLocale(de-at)
- *
- * scala> Faker.Name.name
- * res12: String = Cosima Oschkenat
- *
- * }}}
- * @param localeKey
- */
+  * Provides Information about which locale to use for fake data generation.
+  *
+  * The faker objects will use a sequence of data files representing different locales to generate their values.
+  * The "de-at" locale, for instance, will use the data files de_at.yml, de.yml and en.yml (in that sequence). The companion
+  * object will provide constants for all locales supported by this faker library.
+  *
+  * {{{
+  * scala> Faker.Name.name // will use the default locale (FakerLocale.EN)
+  * res5: String = Cleve Christiansen
+  *
+  * scala> Faker.Name.name(Faker.FakerLocale.DE) // uses the DE-locale and EN as fallback
+  * res7: String = Lina von Harnapp
+  *
+  * scala> implicit val defaultLocale = Faker.FakerLocale.DE_AT // will use the "DE-AT" as locale and "DE" and "EN" as fallback
+  * defaultLocale: org.faker.Faker.FakerLocale = FakerLocale(de-at)
+  *
+  * scala> Faker.Name.name
+  * res12: String = Cosima Oschkenat
+  *
+  * }}}
+  * @param localeKey
+  */
 case class FakerLocale(localeKey: String) {
   val fallbackLanguage = "en"
   lazy val locales = (localesList(localeKey) :+ fallbackLanguage).distinct
 
-  def localesList(locale: String) = {
+  def localesList(locale: String): Seq[String] = {
     val pattern = "^(\\w+)-.*$".r
     pattern.findFirstIn(locale) match {
       case Some(pattern(firstPart)) =>
-        if(FakerLocale.allLocales.exists(fl => fl.localeKey == firstPart))
+        if (FakerLocale.allLocales.exists(fl => fl.localeKey == firstPart))
           Vector(locale, firstPart)
         else
           Vector(locale)
@@ -42,18 +42,18 @@ case class FakerLocale(localeKey: String) {
 }
 
 /**
- * companion object for [[FakerLocale]]
- *
- * provides all supported locales supported.
- *
- * {{{
- * scala> Faker.FakerLocale.EN
- * res13: org.faker.Faker.FakerLocale = FakerLocale(en)
- *
- * Faker.FakerLocale.allLocales
- * res14: scala.collection.immutable.Vector[org.faker.Faker.FakerLocale] = Vector(FakerLocale(de-at), ...)
- * }}}
- */
+  * companion object for [[FakerLocale]]
+  *
+  * provides all supported locales supported.
+  *
+  * {{{
+  * scala> Faker.FakerLocale.EN
+  * res13: org.faker.Faker.FakerLocale = FakerLocale(en)
+  *
+  * Faker.FakerLocale.allLocales
+  * res14: scala.collection.immutable.Vector[org.faker.Faker.FakerLocale] = Vector(FakerLocale(de-at), ...)
+  * }}}
+  */
 object FakerLocale {
   val DE_AT = FakerLocale("de-at")
   val DE_CH = FakerLocale("de-ch")

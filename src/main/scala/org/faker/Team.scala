@@ -9,5 +9,5 @@ package org.faker
  * }}}
  */
 object Team extends Base {
-  def name(implicit locale: FakerLocale = FakerLocale.default) = parse("team.name").titlelize
+  def name(implicit locale: FakerLocale = FakerLocale.default): String = parse("team.name").titlelize
 }
